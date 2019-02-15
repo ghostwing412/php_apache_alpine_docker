@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  redis: 
+    image: redis
+    volumes: 
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./redis:/var/redis
+    ports: 
+      - "6379:6379" 
+    command: redis-server /usr/local/etc/redis/redis.conf 
+  node: 
+    #build: ./
+    image: node:8.11.4 
+    container_name: my-running-app
+    ports:
+      - "6969:6969"
+    volumes:
+      - ./:/app
+    depends_on: 
+      - redis
+    links: 
+      - redis
+    stdin_open: true
+    tty: true
+    privileged: true
+    #command: /app/node_modules/forever/bin/forever -a -l /app/logs/forever.log -e /app/logs/err.log -o /app/logs/out.log /app/net.js

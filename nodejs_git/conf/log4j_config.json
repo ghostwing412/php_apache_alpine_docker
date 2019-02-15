@@ -1,0 +1,39 @@
+{
+  "appenders": [
+    {
+      "type": "console",
+      "category": "console"
+    },
+    {
+      "type": "dateFile",
+      "filename": "logs/access.log",
+      "pattern": "-yyyy-MM-dd",
+      "category": "access",
+      "level": "LOG"
+    },
+    {
+      "type": "file",
+      "filename": "logs/error.log",
+      "maxLogSize": 2097152,
+      "backup": 10,
+      "category": "error"
+    },
+    {
+      "type": "dateFile",
+      "filename": "logs/record.log",
+      "pattern": "-yyyy-MM-dd",
+      "category": "record"
+    },
+    {
+      "type": "dateFile",
+      "filename": "logs/schedule.log",
+      "pattern": "-yyyy-MM-dd",
+      "category": "schedule"
+    }
+  ],
+  "replaceConsole": true,
+  "levels": {
+    "error": "ALL",
+    "record": "ALL"
+  }
+}
