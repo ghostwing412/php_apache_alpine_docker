@@ -1,0 +1,90 @@
+version: '3'
+
+services:
+    db:
+      image: mysql:5.6.43
+      container_name: mysql1
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: 123456
+      ports:
+        - "3306:3306"
+      volumes:
+        - /Users/ghostwing412/Documents/webroot/mysql_data:/var/lib/mysql
+        #- /Users/ghostwing412/Documents/webroot/web_server/mysql_conf/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+    redis:
+      image: redis
+      container_name: redis1
+      restart: always
+      volumes:
+        - /Users/ghostwing412/Documents/webroot/web_server/redis/:/data
+      ports:
+        - "6379:6379"
+      environment:
+        - TZ=Asia/Shanghai
+    httpd:
+      image: httpd:2.4.35-alpine 
+      container_name: apache2
+      ports:
+        - "80:80"
+        - "8082:8082"
+      volumes:
+        - /Users/ghostwing412/Documents/webroot/xampp_root/conf/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+        - /Users/ghostwing412/Documents/webroot/xampp_root/logs:/usr/local/apache2/logs
+        - /Users/ghostwing412/Documents/webroot/xampp_root/conf/httpd-vhosts-docker.conf:/usr/local/apache2/conf.d/docker_vhosts.conf:ro
+        - /Users/ghostwing412/Documents/webroot/newcaibow:/usr/local/apache2/htdocs/myProject_appup
+        - /Users/ghostwing412/Documents/webroot/newpolocai:/usr/local/apache2/htdocs/newpolocai
+        - /Users/ghostwing412/Documents/webroot/caibowuc:/usr/local/apache2/htdocs/caibaouc
+        - /Users/ghostwing412/Documents/webroot/myadmin:/usr/local/apache2/htdocs/myadmin
+        - /Users/ghostwing412/Documents/webroot/polocaibbs:/usr/local/apache2/htdocs/polocaibbs
+        - /Users/ghostwing412/Documents/webroot/polocaicom:/usr/local/apache2/htdocs/polocaicom
+        - /Users/ghostwing412/Documents/webroot/ququan8jump:/usr/local/apache2/htdocs/ququan8jump
+      stdin_open: true
+      #tty: true
+      privileged: true
+      environment:
+       - TZ=Asia/Shanghai
+    php:
+      image: ghostwing412/php:5.6.39-fpm-v4
+      container_name: php_fpm
+      ports:
+        - "9001:9000"
+      volumes:
+        - /Users/ghostwing412/Documents/webroot/web_data/php-default.ini:/usr/local/etc/php/conf.d/php-default.ini
+        - /Users/ghostwing412/Documents/webroot/newcaibow:/usr/local/apache2/htdocs/myProject_appup
+        - /Users/ghostwing412/Documents/webroot/newpolocai:/usr/local/apache2/htdocs/newpolocai
+        - /Users/ghostwing412/Documents/webroot/caibowuc:/usr/local/apache2/htdocs/caibaouc
+        - /Users/ghostwing412/Documents/webroot/myadmin:/usr/local/apache2/htdocs/myadmin
+        - /Users/ghostwing412/Documents/webroot/polocaibbs:/usr/local/apache2/htdocs/polocaibbs
+        - /Users/ghostwing412/Documents/webroot/polocaicom:/usr/local/apache2/htdocs/polocaicom
+        - /Users/ghostwing412/Documents/webroot/ququan8jump:/usr/local/apache2/htdocs/ququan8jump
+      restart: always
+      environment:
+        - TZ=Asia/Shanghai
+    nodejs:
+      image: ghostwing412/node:8.15-p5.6.39-alpine-as
+      container_name: node
+      ports:
+        - "6969:6969"
+      volumes:
+        - /Users/ghostwing412/Documents/webroot/nodejs:/app
+        - /Users/ghostwing412/Documents/webroot/newpolocai:/usr/local/apache2/htdocs/newpolocai
+        - /Users/ghostwing412/Documents/webroot/newcaibow:/usr/local/apache2/htdocs/myProject_appup
+        - /Users/ghostwing412/Documents/webroot/caibowuc:/usr/local/apache2/htdocs/caibaouc
+        - /Users/ghostwing412/Documents/webroot/myadmin:/usr/local/apache2/htdocs/myadmin
+        - /Users/ghostwing412/Documents/webroot/polocaibbs:/usr/local/apache2/htdocs/polocaibbs
+        - /Users/ghostwing412/Documents/webroot/polocaicom:/usr/local/apache2/htdocs/polocaicom
+        - /Users/ghostwing412/Documents/webroot/ququan8jump:/usr/local/apache2/htdocs/ququan8jump
+        # - /Users/ghostwing412/Documents/webroot/web_server/timezone:/etc/timezone
+        #- /etc/localtime:/etc/localtime
+      environment:
+        - TZ=Asia/Shanghai
+      stdin_open: true
+      tty: true
+      privileged: true
+      restart: always 
+      command: forever -a -l /app/logs/forever.log -e /app/logs/err.log -o /app/logs/out.log /app/net.js
+networks:
+  default:
+    external:
+      name: my-php
